@@ -12,7 +12,6 @@
  */
 class Oauth_resource_server
 {
-
 	/**
 	 * The access token.
 	 * 
@@ -20,7 +19,7 @@ class Oauth_resource_server
 	 * @access private
 	 */
 	private $_access_token = NULL;
-
+	
 	/**
 	 * The scopes the access token has access to.
 	 * 
@@ -28,7 +27,7 @@ class Oauth_resource_server
 	 * @access private
 	 */
 	private $_scopes = array();
-
+	
 	/**
 	 * The type of owner of the access token.
 	 * 
@@ -36,7 +35,7 @@ class Oauth_resource_server
 	 * @access private
 	 */
 	private $_type = NULL;
-
+	
 	/**
 	 * The ID of the owner of the access token.
 	 * 
@@ -44,7 +43,7 @@ class Oauth_resource_server
 	 * @access private
 	 */
 	private $_type_id = NULL;
-
+	
 	/**
 	 * Constructor
 	 * 
@@ -69,38 +68,46 @@ class Oauth_resource_server
 		switch ($this->ci->input->server('REQUEST_METHOD'))
 		{
 			default:
+			
 				$access_token = $this->ci->input->get('access_token');
 				if ( ! $access_token)
 				{
 					$access_token = $this->ci->input->get('oauth_token');
 				}
-				break;
+				
+			break;
 				
 			case 'PUT':
+			
 				$access_token = $this->ci->put('access_token'); // assumes you're using https://github.com/philsturgeon/codeigniter-restserver
 				if ( ! $access_token)
 				{
 					$access_token = $this->ci->put('oauth_token');
 				}
-				break;
+				
+			break;
 			
 			case 'POST':
+			
 				$access_token = $this->ci->input->post('access_token');
 				if ( ! $access_token)
 				{
 					$access_token = $this->ci->input->post('oauth_token');
 				}
-				break;
+				
+			break;
 				
 			case 'DELETE':
+			
 				$access_token = $this->ci->delete('access_token'); // assumes you're using https://github.com/philsturgeon/codeigniter-restserver
 				if ( ! $access_token)
 				{
 					$access_token = $this->ci->delete('oauth_token');
 				}
-				break;
+				
+			break;
 		}
-
+		
 		// Try and get an access token from the auth header
 		if (function_exists('apache_request_headers'))
 		{
@@ -135,14 +142,12 @@ class Oauth_resource_server
 					}
 				}
 			}
-			
 			else
 			{
 				$this->ci->output->set_status_header(403);
 				$this->ci->output->set_output('Invalid access token');
 			}
 		}
-		
 		else
 		{
 			$this->ci->output->set_status_header(403);
@@ -201,7 +206,6 @@ class Oauth_resource_server
 			
 			return FALSE;
 		}
-		
 		elseif (is_array($scopes))
 		{
 			foreach ($scopes as $scope)

@@ -1,6 +1,6 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
- * OAuth 2.0 authorisation server library
+ * OAuth 2.0 authorization server library
  * 
  * @category  Library
  * @package   CodeIgniter
@@ -19,19 +19,18 @@ class Oauth_server
 	 * @access public
 	 */
 	protected $ci;
-
+	
 	/**
 	 * Constructor
 	 * 
 	 * @access public
 	 * @return void
 	 */
-
 	public function __construct()
 	{
 		$this->ci = get_instance();
 	}
-		
+	
 	/**
 	 * Validates a client's credentials
 	 * 
@@ -66,21 +65,20 @@ class Oauth_server
 		{
 			return $client_check_query->row();
 		}
-		
 		else
 		{
 			return FALSE;
 		}
 	}
-		
+	
 	/**
-	 * Generates a new authorise code once a user has approved an application
+	 * Generates a new authorize code once a user has approved an application
 	 * 
 	 * @param mixed $client_id    The client ID
 	 * @param mixed $user_id      The user ID
 	 * @param mixed $redirect_uri The client redirect URI
 	 * @param array $scopes       The scopes that the client is requesting
-	 * @param mixed $access_token Optional access token to be updated with a new authorisation code
+	 * @param mixed $access_token Optional access token to be updated with a new authorization code
 	 * 
 	 * @access public
 	 * @return string
@@ -108,7 +106,6 @@ class Oauth_server
 				
 			return $code;
 		}
-		
 		// Create a new oauth session
 		else
 		{
@@ -155,16 +152,15 @@ class Oauth_server
 		return $code;
 	}
 	
-	
 	/**
-	 * Validate the authorisation code
+	 * Validate the authorization code
 	 * 
-	 * @param string $code         The authorisation code
+	 * @param string $code         The authorization code
 	 * @param string $client_id    The client ID
 	 * @param string $redirect_uri The client redirect URI
 	 * 
 	 * @access public
-	 * @return bool if the authorisation code is invalid, return object otherwise
+	 * @return bool if the authorization code is invalid, return object otherwise
 	 */
 	public function validate_auth_code($code = '', $client_id = '', $redirect_uri = '')
 	{
@@ -180,7 +176,6 @@ class Oauth_server
 		{
 			return FALSE;
 		}
-		
 		else
 		{
 			return $validate->row();
@@ -219,8 +214,7 @@ class Oauth_server
 			// Return the access token
 			$exists = $exists_query->row();
 			return $exists->access_token;
-		}
-		
+		}	
 		// An access token doesn't exist yet so create one and remove the authorization code
 		else
 		{
@@ -248,7 +242,7 @@ class Oauth_server
 			return $access_token;
 		}
 	}
-		
+	
 	/**
 	 * Validates an access token
 	 * 
@@ -272,7 +266,6 @@ class Oauth_server
 		{
 			return FALSE;
 		}
-
 		// The access token does exist, validate each scope
 		else
 		{
@@ -297,13 +290,11 @@ class Oauth_server
 				
 				return TRUE;
 			}
-			
 			else
 			{
 				return TRUE;
 			}
-		}
-		
+		}	
 	}	
 	
 	/**
@@ -331,7 +322,6 @@ class Oauth_server
 		{
 			return $token_query->row();
 		}
-		
 		else
 		{
 			return FALSE;
@@ -372,7 +362,6 @@ class Oauth_server
 									->where_in('scope', $scopes)
 									->get('scopes');
 		}
-		
 		else
 		{
 			$scope_details = $this->ci->db
@@ -395,7 +384,7 @@ class Oauth_server
 		
 		return $scopes;
 	}
-		
+	
 	/**
 	 * Generates the redirect uri with appended params
 	 * 
@@ -420,7 +409,6 @@ class Oauth_server
 		return $redirect_uri;
 	}
 	
-		
 	/**
 	 * Sign the user into your application.
 	 *
@@ -437,7 +425,6 @@ class Oauth_server
 	{
 		// Your code here
 	}
-		
 }
 
 // END Oauth_server class

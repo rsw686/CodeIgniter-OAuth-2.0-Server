@@ -1,12 +1,12 @@
 # CodeIgniter OAuth 2.0 server
 
-This is an implementation of an OAuth 2.0 (draft 23) authorisation server using the CodeIgniter PHP framework.
+This is an implementation of an OAuth 2.0 (draft 23) authorization server using the CodeIgniter PHP framework.
 
 ## Supported features
 
 * Flows
-	* Authorisation code
-	* Authorisation token
+	* Authorization code
+	* Authorization token
 * Auto approve applications
 * Users can manage OAuth permissions
 
