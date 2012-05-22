@@ -6,6 +6,7 @@ This is an implementation of an OAuth 2.0 (draft 23) authorisation server using 
 
 * Flows
 	* Authorisation code
+	* Authorisation token
 * Auto approve applications
 * Users can manage OAuth permissions
 

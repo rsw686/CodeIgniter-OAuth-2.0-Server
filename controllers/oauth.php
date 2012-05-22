@@ -62,7 +62,7 @@ class Oauth extends CI_Controller
 		if ($response_type = $this->input->get('response_type'))
 		{
 			$response_type = trim($response_type);
-			$valid_response_types = array('code'); // array to allow for future expansion
+			$valid_response_types = array('code', 'token'); // array to allow for future expansion
 			
 			if ( ! in_array($response_type, $valid_response_types))
 			{
@@ -303,7 +303,7 @@ class Oauth extends CI_Controller
 					}				
 					
 					$redirect_uri = $this->oauth_server->redirect_uri($params['redirect_uri'], $error_params);
-					$this->session->unset_userdata(array('params'=>'','client_details'=>'', 'sign_in_redirect'=>''));
+					$this->session->unset_userdata(array('params'=>'','client_details'=>''));
 					redirect($redirect_uri, 'location');
 					
 				break;
@@ -346,18 +346,32 @@ class Oauth extends CI_Controller
 			break;
 			
 			case 'newrequest':
-			
-				$code = $this->oauth_server->new_auth_code($client->client_id, $user_id, $params['redirect_uri'], $params['scope'], $authorised->access_token);
-				
-				$this->fast_code_redirect($params['redirect_uri'], $params['state'], $code);
-			
-			break;
-			
 			case 'finish':
 
-				$code = $this->oauth_server->new_auth_code($client->client_id, $user_id, $params['redirect_uri'], $params['scope'], $authorised->access_token);
+				switch ($params['response_type'])
+				{		
+					case 'code':
+					
+						$code = $this->oauth_server->new_auth_code($client->client_id, $user_id, $params['redirect_uri'], $params['scope'], $authorised->access_token);
 				
-				$this->fast_token_redirect($params['redirect_uri'], $params['state'], $code);
+						$this->fast_code_redirect($params['redirect_uri'], $params['state'], $code);
+						
+					break;
+					
+					case 'token':
+					
+						$code = $this->oauth_server->new_auth_code($client->client_id, $user_id, $params['redirect_uri'], $params['scope'], $authorised->access_token);
+					
+						// Validate the auth code
+						$session = $this->oauth_server->validate_auth_code($params['code'], $params['client_id'], $params['redirect_uri']);
+						
+						// Generate a new access_token (and remove the authorize code from the session)
+						$access_token = $this->oauth_server->get_access_token($session->id);
+						
+						$this->fast_token_redirect($params['redirect_uri'], $params['state'], $access_token);
+
+					break;
+				}
 				
 			break;
 		}
@@ -488,7 +502,7 @@ class Oauth extends CI_Controller
 	private function fast_code_redirect($redirect_uri = '', $state = '', $code = '')
 	{
 		$redirect_uri = $this->oauth_server->redirect_uri($redirect_uri, array('code' => $code, 'state' => $state));
-		$this->session->unset_userdata(array('params'=>'','client_details'=>'', 'sign_in_redirect'=>''));
+		$this->session->unset_userdata(array('params'=>'','client_details'=>''));
 		redirect($redirect_uri, 'location');	
 	}
 	
@@ -499,16 +513,15 @@ class Oauth extends CI_Controller
 	 * @access private
 	 * @param string $redirect_uri
 	 * @param string $state
-	 * @param string $code
+	 * @param string $access_token
 	 * @return void
 	 */
-	private function fast_token_redirect($redirect_uri = '', $state = '', $code = '')
+	private function fast_token_redirect($redirect_uri = '', $state = '', $access_token = '')
 	{
-		$redirect_uri = $this->oauth_server->redirect_uri($redirect_uri, array('code' => $code, 'state' => $state), '#');
-		$this->session->unset_userdata(array('params'=>'','client_details'=>'', 'sign_in_redirect'=>''));
+		$redirect_uri = $this->oauth_server->redirect_uri($redirect_uri, array('access_token' => $access_token, 'state' => $state), '#');
+		$this->session->unset_userdata(array('params'=>'','client_details'=>''));
 		redirect($redirect_uri, 'location');	
-	}
-	
+	}	
 	
 	/**
 	 * Show an error message
