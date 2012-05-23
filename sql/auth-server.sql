@@ -11,7 +11,7 @@ CREATE TABLE `applications` (
   `notes` TINYTEXT,
   PRIMARY KEY (`id`),
   UNIQUE KEY `client_id` (`client_id`)
-) ENGINE=INNODB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8;
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `scopes` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -20,7 +20,7 @@ CREATE TABLE `scopes` (
   `description` VARCHAR(100) DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `scope` (`scope`)
-) ENGINE=INNODB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8;
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `oauth_sessions` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -28,16 +28,17 @@ CREATE TABLE `oauth_sessions` (
   `redirect_uri` VARCHAR(250) NOT NULL DEFAULT '',
   `type_id` VARCHAR(64) DEFAULT NULL,
   `type` ENUM('user','auto') NOT NULL DEFAULT 'user',
-  `code` TEXT,
-  `access_token` VARCHAR(50) DEFAULT '',
+  `code` VARCHAR(50) DEFAULT NULL,
+  `access_token` VARCHAR(50) DEFAULT NULL,
   `stage` ENUM('request','granted') NOT NULL DEFAULT 'request',
   `first_requested` INT(10) UNSIGNED NOT NULL,
   `last_updated` INT(10) UNSIGNED NOT NULL,
   `limited_access` TINYINT(1) NOT NULL DEFAULT '0' COMMENT 'Used for user agent flows',
   PRIMARY KEY (`id`),
   KEY `client_id` (`client_id`),
+  KEY `access_token` (`access_token`),
   CONSTRAINT `oauth_sessions_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `applications` (`client_id`) ON DELETE CASCADE
-) ENGINE=INNODB AUTO_INCREMENT=161 DEFAULT CHARSET=utf8;
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `oauth_session_scopes` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -50,4 +51,4 @@ CREATE TABLE `oauth_session_scopes` (
   KEY `access_token` (`access_token`),
   CONSTRAINT `oauth_session_scopes_ibfk_1` FOREIGN KEY (`scope`) REFERENCES `scopes` (`scope`),
   CONSTRAINT `oauth_session_scopes_ibfk_2` FOREIGN KEY (`session_id`) REFERENCES `oauth_sessions` (`id`) ON DELETE CASCADE
-) ENGINE=INNODB AUTO_INCREMENT=430 DEFAULT CHARSET=utf8;
+) ENGINE=INNODB DEFAULT CHARSET=utf8;

@@ -314,7 +314,6 @@ class Oauth_server
 										'client_id'					=> $client_id,
 										'type_id'					=> $user_id,
 										'type'						=> 'user',
-										'access_token != '			=> '',
 										'access_token IS NOT NULL'	=> NULL
 									));
 		
